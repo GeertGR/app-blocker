@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "AppBlocker for Google Ads",
+  "version": "1.0",
+  "description": "Exclude all app categories in Google Ads with one click.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AppBlocker for Google Ads"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
