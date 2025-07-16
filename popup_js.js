@@ -58,9 +58,9 @@ async function selectAllCheckboxes() {
         if (checkbox.disabled || checkbox.getAttribute('aria-disabled') === 'true') return;
         if (checkbox.type === 'checkbox') {
           if (!checkbox.checked) {
-            checkbox.checked = true;
-            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            count++;
+          checkbox.checked = true;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          count++;
           }
         } else if (checkbox.getAttribute('role') === 'checkbox') {
           if (checkbox.getAttribute('aria-checked') !== 'true') {
@@ -91,15 +91,44 @@ async function deselectAllCheckboxes() {
         if (checkbox.disabled || checkbox.getAttribute('aria-disabled') === 'true') return;
         if (checkbox.type === 'checkbox') {
           if (checkbox.checked) {
-            checkbox.checked = false;
-            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            count++;
+          checkbox.checked = false;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          count++;
           }
         } else if (checkbox.getAttribute('role') === 'checkbox') {
           if (checkbox.getAttribute('aria-checked') !== 'false') {
             checkbox.click();
             count++;
           }
+        }
+      });
+      return count;
+    }
+  });
+}
+
+// Functie om alle checkboxes om te wisselen
+async function toggleAllCheckboxes() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  await expandAllSections(tab.id);
+  
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => {
+      const checkboxes = [
+        ...document.querySelectorAll('input[type="checkbox"]'),
+        ...document.querySelectorAll('[role="checkbox"]')
+      ];
+      let count = 0;
+      checkboxes.forEach(checkbox => {
+        if (checkbox.disabled || checkbox.getAttribute('aria-disabled') === 'true') return;
+        if (checkbox.type === 'checkbox') {
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          count++;
+        } else if (checkbox.getAttribute('role') === 'checkbox') {
+          checkbox.click();
+          count++;
         }
       });
       return count;
@@ -131,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Zet knoppen standaard enabled
   setActionButtonsEnabled(true);
   updateCheckboxCounts();
-
+  
   // Select all button
   document.getElementById('selectAll').addEventListener('click', async () => {
     await selectAllCheckboxes();
@@ -141,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Deselect all button
   document.getElementById('deselectAll').addEventListener('click', async () => {
     await deselectAllCheckboxes();
+    await updateCheckboxCounts();
+  });
+  
+  // Toggle all button
+  document.getElementById('toggleAll').addEventListener('click', async () => {
+    await toggleAllCheckboxes();
     await updateCheckboxCounts();
   });
 });

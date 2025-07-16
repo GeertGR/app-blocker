@@ -44,8 +44,8 @@ function selectAllCheckboxes() {
     if (checkbox.disabled || checkbox.getAttribute('aria-disabled') === 'true') return;
     if (checkbox.type === 'checkbox') {
       if (!checkbox.checked) {
-        checkbox.checked = true;
-        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       }
     } else if (checkbox.getAttribute('role') === 'checkbox') {
       if (checkbox.getAttribute('aria-checked') !== 'true') {
@@ -65,8 +65,8 @@ function deselectAllCheckboxes() {
     if (checkbox.disabled || checkbox.getAttribute('aria-disabled') === 'true') return;
     if (checkbox.type === 'checkbox') {
       if (checkbox.checked) {
-        checkbox.checked = false;
-        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       }
     } else if (checkbox.getAttribute('role') === 'checkbox') {
       if (checkbox.getAttribute('aria-checked') !== 'false') {
